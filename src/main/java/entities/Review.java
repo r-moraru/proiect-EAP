@@ -3,12 +3,14 @@ package entities;
 import java.util.Date;
 
 public class Review {
-    private final Long idClient;
-    private final Long idProdus;
-    private int scor;           // intre 0 si 10
+    private Long idClient;
+    private Long idProdus;
+    private Integer scor;           // intre 0 si 10
     private String titlu;
     private String descriere;
-    private final Date data;
+    private Date data;
+
+    public Review() {}
 
     public Review(Long idClient, Long idProdus, int scor, String titlu, String descriere) {
         this.idClient = idClient;
@@ -52,4 +54,16 @@ public class Review {
     }
 
     public Date getData() { return data; }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "idClient=" + idClient +
+                ", idProdus=" + idProdus +
+                ", scor=" + scor +
+                ", titlu='" + titlu + '\'' +
+                ", descriere='" + descriere + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

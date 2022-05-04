@@ -10,6 +10,8 @@ public class Comanda {
     private Map<Produs, Integer> produse;
     private Date dataPlasarii;
 
+    public Comanda() {}
+
     public Comanda(Long id, Long idUser, String adresaLivrare, Map<Produs, Integer> produse) {
         this.id = id;
         this.idUser = idUser;

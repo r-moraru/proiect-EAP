@@ -1,18 +1,68 @@
 package services;
 
 import daos.ProdusDAO;
-import entities.Produs;
+import entities.Chitara;
+import entities.Claviatura;
+import entities.Diverse;
+import csv.services.CsvWriter;
 
 public class AdminService {
     private ProdusDAO produsDAO;
+    private CsvWriter csvWriter;
 
-    public AdminService(ProdusDAO produsDAO) {
+    public AdminService(ProdusDAO produsDAO, CsvWriter csvWriter) {
         this.produsDAO = produsDAO;
+        this.csvWriter = csvWriter;
     }
 
     // adauga produs
-    public void addProduct(Produs product) {
-        produsDAO.saveProdus(product);
+    public void addChitara(int numarCorzi, Chitara.Tip tip, Chitara.Lemn lemnFretboard,
+                           Chitara.Lemn lemnBody, int nrFreturi, Boolean pentruStangaci,
+                           long id, double pret, int cantitate, String numeProducator,
+                           String numeModel) {
+
+        Chitara chitara = new Chitara(numarCorzi, tip, lemnFretboard, lemnBody, nrFreturi,
+                pentruStangaci, id, pret, cantitate, numeProducator, numeModel);
+
+        produsDAO.saveProdus(chitara);
+        try {
+            csvWriter.saveData(Chitara.class, chitara, "src/main/resources/csv/chitari.csv");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addClaviatura(int numarClape, Claviatura.Tip tip,
+                              long id, double pret, int cantitate,
+                              String numeProducator, String numeModel) {
+        Claviatura claviatura = new Claviatura(numarClape, tip, id, pret,
+                cantitate, numeProducator, numeModel);
+
+        produsDAO.saveProdus(claviatura);
+        try {
+            csvWriter.saveData(Claviatura.class, claviatura, "src/main/resources/csv/claviaturi.csv");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addDiverse(Boolean compatibilCuChitara, Boolean compatibilCuClaviatura,
+                           Boolean contineSoftware, Boolean contineHardware,
+                           long id, double pret, int cantitate,
+                           String numeProducator, String numeModel) {
+        Diverse diverse = new Diverse(compatibilCuChitara, compatibilCuClaviatura,
+                contineSoftware, contineHardware, id, pret, cantitate, numeProducator,
+                numeModel);
+
+        produsDAO.saveProdus(diverse);
+        try {
+            csvWriter.saveData(Diverse.class, diverse, "src/main/resources/csv/diverse.csv");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // editeaza stoc produs

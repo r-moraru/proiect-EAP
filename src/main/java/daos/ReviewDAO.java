@@ -1,7 +1,7 @@
 package daos;
 
-import entities.Produs;
 import entities.Review;
+import csv.services.CsvReader;
 
 import java.util.*;
 
@@ -32,6 +32,23 @@ class ReviewId implements Comparable<ReviewId> {
 
 public class ReviewDAO {
     private Map<ReviewId, Review> reviewDB = new TreeMap<>();
+
+    public ReviewDAO() {
+        List<Review> reviews;
+
+        try {
+            reviews = CsvReader.getInstance().readAll(Review.class,
+                    "src/main/resources/csv/reviews.csv");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        for (Review review : reviews) {
+            reviewDB.put(new ReviewId(review.getIdClient(), review.getIdProdus()),
+                    review);
+        }
+    }
 
     public void saveReview(Review review) {
         ReviewId reviewId = new ReviewId(review.getIdClient(), review.getIdProdus());

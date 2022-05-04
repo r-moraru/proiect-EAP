@@ -1,7 +1,7 @@
 package entities;
 
 public class Chitara extends Produs {
-    private int numarCorzi;
+    private Integer numarCorzi;
 
     public enum Tip {
         BASS_ELECTRIC,
@@ -22,12 +22,14 @@ public class Chitara extends Produs {
 
     private Lemn lemnFretboard;
     private Lemn lemnBody;
-    private int nrFreturi;
+    private Integer nrFreturi;
 
     private Boolean pentruStangaci;
 
+    public Chitara() {}
+
     public Chitara(int numarCorzi, Tip tip, Lemn lemnFretboard, Lemn lemnBody,
-                   int nrFreturi, Boolean pentruStangaci,
+                   int nrFreturi, boolean pentruStangaci,
                    long id, double pret, int cantitate, String numeProducator, String numeModel) {
         super(id, pret, cantitate, numeProducator, numeModel);
         this.numarCorzi = numarCorzi;
@@ -78,11 +80,11 @@ public class Chitara extends Produs {
         this.nrFreturi = nrFreturi;
     }
 
-    public Boolean getPentruStangaci() {
+    public boolean getPentruStangaci() {
         return pentruStangaci;
     }
 
-    public void setPentruStangaci(Boolean pentruStangaci) {
+    public void setPentruStangaci(boolean pentruStangaci) {
         this.pentruStangaci = pentruStangaci;
     }
 

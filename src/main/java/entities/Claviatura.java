@@ -1,7 +1,7 @@
 package entities;
 
 public class Claviatura extends Produs {
-    private int numarClape;
+    private Integer numarClape;
 
     public enum Tip {
         MIDI_CONTROLLER,
@@ -10,6 +10,8 @@ public class Claviatura extends Produs {
     }
 
     private Tip tip;
+
+    public Claviatura() {}
 
     public Claviatura(int numarClape, Tip tip,
                       long id, double pret, int cantitate,

@@ -7,6 +7,8 @@ public class Diverse extends Produs {
     private Boolean contineSoftware;
     private Boolean contineHardware;    // pot exista produse care sunt si hardware si software
 
+    public Diverse() {}
+
     public Diverse(Boolean compatibilCuChitara, Boolean compatibilCuClaviatura,
                    Boolean contineSoftware, Boolean contineHardware,
                    long id, double pret, int cantitate, String numeProducator, String numeModel) {
