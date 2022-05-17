@@ -11,6 +11,10 @@ public class ComandaDAO {
     // map de la id client la lista de comenzi
     private Map<Long, List<Comanda>> comandaDB = new TreeMap<>();
 
+    public ComandaDAO() {
+
+    }
+
     public void saveComanda(Comanda comanda) {
         Long id = comandaDB.size()+1L;
         comanda.setId(id);

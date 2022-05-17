@@ -7,6 +7,8 @@ public class Cos {
     private Long idUser;
     private Map<Produs, Integer> produse = new TreeMap<>();
 
+    public Cos() {}
+
     public Cos(Long idUser) {
         this.idUser = idUser;
     }

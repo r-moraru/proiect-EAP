@@ -13,9 +13,11 @@ public class Produs implements Comparable<Produs> {
 
      private Long id;
      private Double pret;
-     private int cantitate;
+     private Integer cantitate;
      private String numeProducator;
      private String numeModel;
+
+     public Produs() {}
 
     public Produs(Long id, double pret, int cantitate,
                   String numeProducator, String numeModel) {

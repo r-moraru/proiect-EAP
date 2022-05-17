@@ -6,6 +6,8 @@ public class Client {
     private String prenume;
     private String adresaMail;
 
+    public Client() {}
+
     public Client(long id, String nume, String prenume, String adresaMail) {
         this.id = id;
         this.nume = nume;
