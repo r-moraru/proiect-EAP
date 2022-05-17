@@ -4,6 +4,7 @@ import entities.Review;
 import csv.services.CsvReader;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 class ReviewId implements Comparable<ReviewId> {
     private Long userId;
@@ -63,10 +64,12 @@ public class ReviewDAO {
     public List<Review> getUserReviews(Long userId) {
         List<Review> reviews = new ArrayList<>();
 
-        for (Map.Entry<ReviewId, Review> entry : reviewDB.entrySet()) {
-            if (Objects.equals(entry.getKey().getUserId(), userId))
-                reviews.add(entry.getValue());
-        }
+        Set<Map.Entry<ReviewId, Review>> entries = reviewDB.entrySet();
+
+        entries.stream().filter(entry ->
+                        entry.getKey().getUserId().equals(userId))
+                .toList()
+                .forEach(entry -> reviews.add(entry.getValue()));
 
         return reviews;
     }
@@ -74,10 +77,12 @@ public class ReviewDAO {
     public List<Review> getProductReviews(Long productId) {
         List<Review> reviews = new ArrayList<>();
 
-        for (Map.Entry<ReviewId, Review> entry : reviewDB.entrySet()) {
-            if (Objects.equals(entry.getKey().getProductId(), productId))
-                reviews.add(entry.getValue());
-        }
+        Set<Map.Entry<ReviewId, Review>> entries = reviewDB.entrySet();
+
+        entries.stream().filter(entry ->
+                entry.getKey().getProductId().equals(productId))
+                .toList()
+                .forEach(entry -> reviews.add(entry.getValue()));
 
         return reviews;
     }
