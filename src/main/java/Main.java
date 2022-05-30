@@ -1,6 +1,9 @@
 import daos.*;
 import entities.*;
 import csv.services.CsvWriter;
+import repositories.ChitaraRepo;
+import repositories.ClaviaturaRepo;
+import repositories.DiverseRepo;
 import services.AdminService;
 import services.AuditService;
 import services.CustomerService;
@@ -8,10 +11,13 @@ import services.CustomerService;
 import java.util.*;
 
 public class Main {
-    // TODO: decouple DAO dependencies
 
     public static void main(String[] args) {
-        ProdusDAO produsDAO = new ProdusDAO();
+        ChitaraRepo chitaraRepo = new ChitaraRepo(true);
+        ClaviaturaRepo claviaturaRepo = new ClaviaturaRepo(true);
+        DiverseRepo diverseRepo = new DiverseRepo(true);
+        ProdusDAO produsDAO = new ProdusDAO(chitaraRepo, claviaturaRepo, diverseRepo);
+
         ClientDAO clientDAO = new ClientDAO();
         CosDAO cosDAO = new CosDAO(clientDAO);
         ReviewDAO reviewDAO = new ReviewDAO();
@@ -40,7 +46,6 @@ public class Main {
         while ((line = in.nextLine()) != null) {
             List<String> command = Arrays.asList(line.split(" "));
 
-            // TODO: creez un command parser ca sa reduc din main
             System.out.println(command.get(0));
             switch (command.get(0)) {
                 // COMENZI PENTRU ADMIN
@@ -92,15 +97,24 @@ public class Main {
                             id, pret, cantitate, numeProd, numeModel);
                 }
                 case "adauga_cantitate" -> {
-                    long prodId = Long.parseLong(command.get(1));
-                    int cantitate = Integer.parseInt(command.get(2));
+                    String tip = command.get(1);
+                    long prodId = Long.parseLong(command.get(2));
+                    int cantitate = Integer.parseInt(command.get(3));
 
-                    adminService.adaugaCantitate(prodId, cantitate);
+                    if (Objects.equals(tip, "chitara"))
+                        adminService.adaugaCantitateChitara(prodId, cantitate);
+                    else if (Objects.equals(tip, "claviatura"))
+                        adminService.adaugaCantitateClaviatura(prodId, cantitate);
+                    else if (Objects.equals(tip, "diverse"))
+                        adminService.adaugaCantitateDiverse(prodId, cantitate);
+                    else {
+                        System.out.println("Tip nerecunoscut");
+                    }
                 }
                 case "remove_product" -> {
-                    long prodId = Long.parseLong(command.get(1));
-
-                    adminService.removeProduct(prodId);
+                    String tip = command.get(1);
+                    int prodId = Integer.parseInt(command.get(2));
+                    adminService.removeProdus(tip, prodId);
                 }
                 // COMENZI PENTRU USER
                 case "get_produse" -> {
@@ -110,10 +124,11 @@ public class Main {
                 }
                 case "adauga_produs" -> {
                     Long userId = Long.parseLong(command.get(1));
-                    Long prodId = Long.parseLong(command.get(2));
-                    Integer cantitate = Integer.parseInt(command.get(3));
+                    String tipProd = command.get(2);
+                    Long prodId = Long.parseLong(command.get(3));
+                    Integer cantitate = Integer.parseInt(command.get(4));
 
-                    customerService.adaugaProdus(userId, prodId, cantitate);
+                    customerService.adaugaProdus(userId, tipProd, prodId, cantitate);
                 }
                 case "plaseaza_comanda" -> {
                     Long userId = Long.parseLong(command.get(1));
@@ -163,7 +178,7 @@ public class Main {
             try {
                 auditService.log(command.get(0));
             }
-            catch (Exception e){
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }

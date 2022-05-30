@@ -5,50 +5,32 @@ import entities.Claviatura;
 import entities.Diverse;
 import entities.Produs;
 import csv.services.CsvReader;
+import repositories.ChitaraRepo;
+import repositories.ClaviaturaRepo;
+import repositories.DiverseRepo;
 
 import java.util.*;
 
 import static java.util.Collections.reverse;
 
 public class ProdusDAO {
-    private Map<Long, Produs> produsDB = new TreeMap<>();
+    private ChitaraRepo chitaraRepo;
+    private ClaviaturaRepo claviaturaRepo;
+    private DiverseRepo diverseRepo;
 
-    public ProdusDAO() {
-        Long id = 1L;
-        // TODO: load data from csv
-
-        List<Produs> produse = new ArrayList<>();
-        try {
-            produse.addAll(CsvReader.getInstance().readAll(Chitara.class,
-                    "src/main/resources/csv/chitari.csv"));
-            produse.addAll(CsvReader.getInstance().readAll(Claviatura.class,
-                    "src/main/resources/csv/claviaturi.csv"));
-            produse.addAll(CsvReader.getInstance().readAll(Diverse.class,
-                    "src/main/resources/csv/diverse.csv"));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-
-        for (Produs produs : produse) {
-            produsDB.put(produs.getId(), produs);
-        }
-
-        // produsDB.put(id, new Chitara(6, Chitara.Tip.ELECTRICA, Chitara.Lemn.ROSEWOOD, Chitara.Lemn.MAHOGANY, 22, false,
-        //         1, 4199, 31, "Fender", "Jazzmaster"));
-        // produsDB.put(id+1, new Claviatura(88, Claviatura.Tip.MIDI_CONTROLLER,
-        //         id+1, 1800, 78, "Arturia", "Keylab 88"));
-        // produsDB.put(id+2, new Diverse(true, false, false, true,
-        //         id+2, 59.90, 138, "D'Addario", "Pro-Arte Nylon Strings"));
+    public ProdusDAO(ChitaraRepo chitaraRepo, ClaviaturaRepo claviaturaRepo,
+                    DiverseRepo diverseRepo) {
+        this.chitaraRepo = chitaraRepo;
+        this.claviaturaRepo = claviaturaRepo;
+        this.diverseRepo = diverseRepo;
     }
 
     public List<Produs> getProduse(Produs.OrderCrit orderCrit, Produs.OrderType orderType) {
         List<Produs> ret = new ArrayList<>();
 
-        for (Map.Entry<Long, Produs> entry : produsDB.entrySet()) {
-            ret.add(entry.getValue());
-        }
+        ret.addAll(chitaraRepo.getAll());
+        ret.addAll(claviaturaRepo.getAll());
+        ret.addAll(diverseRepo.getAll());
 
         if (orderCrit == Produs.OrderCrit.NUME) {
             NameComparator nameComparator = new NameComparator();
@@ -66,22 +48,55 @@ public class ProdusDAO {
         return ret;
     }
 
-    public Produs getById(Long id) {
-        return produsDB.get(id);
+
+    public Produs getChitaraById(Long id) {
+        return chitaraRepo.getById(Math.toIntExact(id));
+    }
+
+    public Produs getClaviaturaById(Long id) {
+        return claviaturaRepo.getById(Math.toIntExact(id));
+    }
+
+    public Produs getDiverseById(Long id) {
+        return diverseRepo.getById(Math.toIntExact(id));
     }
 
     public void saveProdus(Produs produs) {
-        produsDB.put(produs.getId(), produs);
+        if (produs instanceof Chitara)
+            chitaraRepo.insertChitara((Chitara)produs);
+        if (produs instanceof Claviatura)
+            claviaturaRepo.insertClaviatura((Claviatura)produs);
+        if (produs instanceof Diverse)
+            diverseRepo.insertDiverse((Diverse)produs);
     }
 
-    public void removeProdus(Long prodId) {
-        produsDB.remove(prodId);
+    public void removeProdus(Produs produs) {
+        if (produs instanceof Chitara)
+            chitaraRepo.deleteById(Math.toIntExact(produs.getId()));
+        if (produs instanceof Claviatura)
+            claviaturaRepo.deleteById(Math.toIntExact(produs.getId()));
+        if (produs instanceof Diverse)
+            diverseRepo.deleteById(Math.toIntExact(produs.getId()));
     }
 
-    public void scadeCantitate(Long produsId, Integer cantitate) {
-        Produs prod = produsDB.get(produsId);
-        prod.setCantitate(Math.max(prod.getCantitate() - cantitate, 0));
+    public void scadeCantitateChitara(Integer id, Integer cantitate) {
+        Chitara chitara = chitaraRepo.getById(id);
+        chitara.setCantitate(Math.max(chitara.getCantitate() - cantitate, 0));
+        chitaraRepo.updateChitara(chitara);
     }
+
+    public void scadeCantitateClaviatura(Integer id, Integer cantitate) {
+        Claviatura claviatura = claviaturaRepo.getById(id);
+        claviatura.setCantitate(Math.max(claviatura.getCantitate() - cantitate, 0));
+        claviaturaRepo.updateClaviatura(claviatura);
+    }
+
+    public void scadeCantitateDiverse(Integer id, Integer cantitate) {
+        Diverse diverse = diverseRepo.getById(id);
+        diverse.setCantitate(Math.max(diverse.getCantitate() - cantitate, 0));
+        diverseRepo.updateDiverse(diverse);
+    }
+
 }
 
 class NameComparator implements Comparator<Produs> {
