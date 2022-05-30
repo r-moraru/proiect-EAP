@@ -3,6 +3,7 @@ import entities.*;
 import csv.services.CsvWriter;
 import repositories.ChitaraRepo;
 import repositories.ClaviaturaRepo;
+import repositories.ClientRepo;
 import repositories.DiverseRepo;
 import services.AdminService;
 import services.AuditService;
@@ -16,9 +17,10 @@ public class Main {
         ChitaraRepo chitaraRepo = new ChitaraRepo(true);
         ClaviaturaRepo claviaturaRepo = new ClaviaturaRepo(true);
         DiverseRepo diverseRepo = new DiverseRepo(true);
+        ClientRepo clientRepo = new ClientRepo(true);
         ProdusDAO produsDAO = new ProdusDAO(chitaraRepo, claviaturaRepo, diverseRepo);
 
-        ClientDAO clientDAO = new ClientDAO();
+        ClientDAO clientDAO = new ClientDAO(clientRepo);
         CosDAO cosDAO = new CosDAO(clientDAO);
         ReviewDAO reviewDAO = new ReviewDAO();
         ComandaDAO comandaDAO = new ComandaDAO();
