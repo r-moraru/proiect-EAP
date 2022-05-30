@@ -6,6 +6,7 @@ import csv.services.CsvWriter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 
@@ -38,8 +39,18 @@ public class CustomerService {
     }
 
     // adauga prod in cos, tot cu aceasta functie se pot sterge produse din daca
-    public void adaugaProdus(Long userId, Long idProd, Integer cantitate) {
-        Produs prod = produsDAO.getById(idProd);
+    public void adaugaProdus(Long userId, String tip, Long idProd, Integer cantitate) {
+        Produs prod;
+
+        if (Objects.equals(tip, "chitara"))
+            prod = produsDAO.getChitaraById(idProd);
+        else if (Objects.equals(tip, "claviatura"))
+            prod = produsDAO.getClaviaturaById(idProd);
+        else if (Objects.equals(tip, "diverse"))
+            prod = produsDAO.getDiverseById(idProd);
+        else
+            return;
+
         Cos cos = cosDAO.getCos(userId);
         cos.setCantitateProdus(prod, cantitate);
     }
@@ -53,7 +64,13 @@ public class CustomerService {
         Map<Produs, Integer> produse = comanda.getProduse();
         for (Map.Entry<Produs, Integer> entry : produse.entrySet()) {
             Long prodId = entry.getKey().getId();
-            produsDAO.scadeCantitate(prodId, entry.getValue());
+
+            if (entry.getKey() instanceof Chitara)
+                produsDAO.scadeCantitateChitara(Math.toIntExact(prodId), entry.getValue());
+            if (entry.getKey() instanceof Claviatura)
+                produsDAO.scadeCantitateClaviatura(Math.toIntExact(prodId), entry.getValue());
+            if (entry.getKey() instanceof Diverse)
+                produsDAO.scadeCantitateDiverse(Math.toIntExact(prodId), entry.getValue());
         }
     }
 

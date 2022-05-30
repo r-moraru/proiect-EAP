@@ -5,6 +5,9 @@ import entities.Chitara;
 import entities.Claviatura;
 import entities.Diverse;
 import csv.services.CsvWriter;
+import entities.Produs;
+
+import java.util.Objects;
 
 public class AdminService {
     private ProdusDAO produsDAO;
@@ -66,12 +69,30 @@ public class AdminService {
     }
 
     // editeaza stoc produs
-    public void adaugaCantitate(Long prodId, Integer cantitate) {
-        produsDAO.scadeCantitate(prodId, -cantitate);
+    public void adaugaCantitateChitara(Long prodId, Integer cantitate) {
+        produsDAO.scadeCantitateChitara(Math.toIntExact(prodId), -cantitate);
+    }
+
+    public void adaugaCantitateClaviatura(Long prodId, Integer cantitate) {
+        // produsDAO.scadeCantitateClaviatura(Math.toIntExact(prodId), -cantitate);
+    }
+
+    public void adaugaCantitateDiverse(Long prodId, Integer cantitate) {
+        // produsDAO.scadeCantitateDiverse(Math.toIntExact(prodId), -cantitate);
     }
 
     // sterge produs
-    public void removeProduct(Long prodId) {
-        produsDAO.removeProdus(prodId);
+    public void removeProdus(String tip, int id) {
+        Produs prod;
+
+        if (Objects.equals(tip, "chitara"))
+            prod = new Chitara();
+        else if (Objects.equals(tip, "claviatura"))
+            prod = new Claviatura();
+        else prod = new Diverse();
+
+        prod.setId((long) id);
+
+        produsDAO.removeProdus(prod);
     }
 }
